@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="google-site-verification" content="hBcbTkVqCyTn-S6HSPlx0_wTxjTVgN24gpWv70yl7Og"><title>她写过 · 中国古代才女</title><meta name="description" content="911 位中国古代女性诗人,从七十六万首古典诗词中被逐一找回。她写过,而记录可以证明。"><link rel="canonical" href="https://shewrote.teenycao.com/index"><meta property="og:title" content="她写过 · 中国古代才女"><meta property="og:description" content="911 位中国古代女性诗人,从七十六万首古典诗词中被逐一找回。她写过,而记录可以证明。"><meta property="og:image" content="https://shewrote.teenycao.com/assets/og-cover.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="/favicon.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0a0c11"><script>
+  // 默认=宣纸(paper)。?theme=paper|dawn|ink|gold 切换并记住(gold=黑金对照)
+  const themeKey = 'shewrote-theme';
+  const themeSet = new Set(['paper', 'dawn', 'ink', 'gold']);
+  const readTheme = () => {
+    const v = localStorage.getItem(themeKey);
+    if (!v) return 'paper';
+    if (themeSet.has(v)) return v;
+    localStorage.removeItem(themeKey);
+    return 'paper';
+  };
+  const t = new URLSearchParams(location.search).get('theme');
+  if (t) {
+    const next = t === 'default' ? 'gold' : t;
+    if (themeSet.has(next)) localStorage.setItem(themeKey, next);
+    else localStorage.removeItem(themeKey);
+  }
+  const saved = readTheme();
+  if (saved !== 'gold') document.documentElement.dataset.theme = saved;
+  document.querySelector('meta[name="theme-color"]').content =
+    saved === 'paper' ? '#f8f5e6' : saved === 'dawn' ? '#f0f4f8' : saved === 'ink' ? '#1c1c1e' : '#0a0c11';
+</script><style>:root{--bg:#0a0c11;--bg2:#10131b;--panel:#141824;--line:#262b38;--gold:#c9a45c;--gold-hi:#ecd29a;--gold-dim:#8a7248;--gold-faint:rgba(201,164,92,.28);--red:#b0392b;--tx:#eae3d0;--dim:#96907e;--faint:#5c584c;--bg-rgb:10,12,17;--tx-rgb:234,227,208}[data-theme=paper]{--bg: #f8f5e6;--bg2: #fdfaf2;--panel: #f3eedc;--line: #dcd4ba;--gold: #b38b4d;--gold-hi: #8c6a36;--gold-dim: #997e55;--gold-faint: rgba(179,139,77,.15);--red: #a8362a;--tx: #1a1a1a;--dim: #4a4a4a;--faint: #737373;--bg-rgb:248,245,230;--tx-rgb:26,26,26}[data-theme=dawn]{--bg: #f0f4f8;--bg2: #f7f9fc;--panel: #e2e8f0;--line: #cbd5e1;--gold: #64748b;--gold-hi: #334155;--gold-dim: #94a3b8;--gold-faint: rgba(100,116,139,.15);--red: #0ea5e9;--tx: #0f172a;--dim: #334155;--faint: #64748b;--bg-rgb:240,244,248;--tx-rgb:15,23,42}[data-theme=ink]{--bg: #1c1c1e;--bg2: #242426;--panel: #2c2c2e;--line: #3a3a3c;--gold: #b3b3b7;--gold-hi: #e5e5ea;--gold-dim: #8e8e93;--gold-faint: rgba(142,142,147,.2);--red: #ff453a;--tx: #f2f2f7;--dim: #aeaeb2;--faint: #636366;--bg-rgb:28,28,30;--tx-rgb:242,242,247}*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{background:var(--bg)}body{background:var(--bg);color:var(--tx);font-family:Songti SC,STSongti-SC-Regular,STSongti SC,STSong,Songti TC,"Noto Serif SC","Noto Serif CJK SC","Source Han Serif SC","Source Han Serif CN",serif;min-height:100dvh;overflow-x:hidden}button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}input{font-family:inherit}a{color:inherit;text-decoration:none}.hidden{display:none!important}[data-theme=paper] body,[data-theme=paper] #stage{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.22 0 0 0 0.055 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E")}@font-face{font-family:"Noto Serif SC";font-style:normal;font-weight:200 900;font-display:swap;src:url(/_astro/noto-serif-sc.DSAjWD5W.woff2) format("woff2")}
+</style><link rel="stylesheet" href="/_astro/index.DZhh08R9.css"></head> <body>  <section id="stage" data-astro-cid-j7pv25f6> <div class="top" data-astro-cid-j7pv25f6> <div class="hrow" data-astro-cid-j7pv25f6> <span class="logo" data-astro-cid-j7pv25f6><img class="hicon" src="/assets/icon-192.png" alt="她" data-astro-cid-j7pv25f6><span class="htitle" data-astro-cid-j7pv25f6>中国古代才女</span></span> <span class="sp" data-astro-cid-j7pv25f6></span> <div id="bar" data-astro-cid-j7pv25f6> <input id="barInput" class="bar-input" placeholder="搜她的名字 / 字号 / pinyin" data-astro-cid-j7pv25f6> <button class="ibtn" id="searchBtn" aria-label="搜索" data-astro-cid-j7pv25f6> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-j7pv25f6><circle cx="11" cy="11" r="7" data-astro-cid-j7pv25f6></circle><path d="M21 21l-4.6-4.6" data-astro-cid-j7pv25f6></path></svg> </button> <button class="ibtn" id="favBtn" data-astro-cid-j7pv25f6>♡<span id="favN" data-astro-cid-j7pv25f6>0</span></button> <a class="ibtn poets-link" href="/poets" aria-label="名录" data-astro-cid-j7pv25f6> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" data-astro-cid-j7pv25f6><rect x="3.5" y="3.5" width="7" height="7" rx="1.4" data-astro-cid-j7pv25f6></rect><rect x="13.5" y="3.5" width="7" height="7" rx="1.4" data-astro-cid-j7pv25f6></rect><rect x="3.5" y="13.5" width="7" height="7" rx="1.4" data-astro-cid-j7pv25f6></rect><rect x="13.5" y="13.5" width="7" height="7" rx="1.4" data-astro-cid-j7pv25f6></rect></svg> </a> <button class="ibtn" id="closeSearch" data-astro-cid-j7pv25f6>✕</button> </div> </div> </div> <nav id="dyNav" aria-label="按朝代跳转" data-astro-cid-j7pv25f6></nav> <div id="sea-container" data-astro-cid-j7pv25f6> <div id="cardTabs" class="card-tabs" hidden data-astro-cid-j7pv25f6> <button id="womenTab" class="on" type="button" data-astro-cid-j7pv25f6>她们 <span id="womenN" data-astro-cid-j7pv25f6>0</span></button> <button id="quotesTab" type="button" data-astro-cid-j7pv25f6>摘句 <span id="quotesN" data-astro-cid-j7pv25f6>0</span></button> </div> <div id="hero" data-astro-cid-j7pv25f6> <canvas id="heroCv" data-astro-cid-j7pv25f6></canvas> <div class="hero3d-quote" id="quoteContainer" style="opacity:0" data-astro-cid-j7pv25f6> <div class="hq-line" id="quoteLine" data-astro-cid-j7pv25f6>未若柳絮因风起</div> <div class="hq-src" id="quoteSrc" data-astro-cid-j7pv25f6>谢道韫 (魏晋)</div> </div> <div class="hc-hint" data-astro-cid-j7pv25f6>↓ 按朝代,读她们的名字</div> </div> <div id="seaList" data-astro-cid-j7pv25f6></div> <div id="quoteList" hidden data-astro-cid-j7pv25f6></div> </div> </section>  <script type="module" src="/_astro/index.astro_astro_type_script_index_0_lang.DjrcLqvD.js"></script>  <script>
+  // 匿名埋点:无 cookie,anon=与划线同一 localStorage 随机 id;同源 /api 经 nginx 内网代理。
+  // GH Pages 后备源站无 /api,静默失败;dev 直连 fly.dev。
+  (()=>{
+    try{
+      const k='shewrote-anon';
+      let a=localStorage.getItem(k);
+      if(!a){a=([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));localStorage.setItem(k,a);}
+      const API=(location.hostname==='localhost'||/^192\.168\./.test(location.hostname))?'https://shewrote-marks.fly.dev':'';
+      // text/plain=简单请求:sendBeacon 跨域不预检,json 类型会被静默拦(dev 直连 fly.dev 时踩过)
+      const send=(path,obj)=>{const b=JSON.stringify(obj);
+        if(!(navigator.sendBeacon&&navigator.sendBeacon(API+path,new Blob([b],{type:'text/plain'}))))
+          fetch(API+path,{method:'POST',headers:{'content-type':'text/plain'},body:b}).catch(()=>{});};
+      send('/api/hit',{path:location.pathname,anon:a});
+      // 设备维度:mobile/desktop;服务端按匿名 id 去重出每日各设备 UV
+      send('/api/event',{t:'device',k:(matchMedia('(pointer:coarse)').matches||innerWidth<768)?'mobile':'desktop',anon:a});
+      // 行为埋点:card/save/share/fav/search0,页面脚本调 window.swe(type,key)
+      window.swe=(t,k)=>{try{send('/api/event',{t,k:String(k).slice(0,40),anon:a})}catch(e){}};
+    }catch(e){}
+  })();
+</script> </body> </html>

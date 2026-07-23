@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://shewrote.teenycao.com/sitemap-index.xml

@@ -1,0 +1,13 @@
+{
+  "name": "她写过 · 中国古代才女",
+  "short_name": "她写过",
+  "description": "869 位中国古代女性诗人的卡牌档案",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0c11",
+  "theme_color": "#0a0c11",
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

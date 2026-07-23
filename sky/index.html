@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>中国古代才女 · 她们的星空</title>
+<style>
+  :root { --gold:#D9B36C; --gold-dim:#8A7648; --red:#C9524C; --bg:#050608; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { height:100%; background:var(--bg); overflow:hidden;
+    font-family:"Songti SC","STSong","Noto Serif CJK SC",serif; }
+  #scene { position:fixed; inset:0; }
+  
+  /* UI Elements */
+  .ui { position:fixed; color:var(--gold); user-select:none; z-index:10; opacity:0; transition:opacity 2s ease-in-out; }
+  .ui.visible { opacity: 1; }
+  
+  #title { top:30px; left:30px; }
+  #title h1 { font-size:24px; font-weight:600; letter-spacing:12px; color:var(--gold); text-shadow: 0 0 15px rgba(217,179,108,0.4); }
+  #title p { font-size:12px; color:var(--gold-dim); margin-top:10px; letter-spacing:5px; }
+  
+  #controls { top:100px; left:30px; display:flex; gap:10px; flex-wrap:wrap; }
+  #q { background:rgba(217,179,108,.04); border:1px solid rgba(217,179,108,.2); color:var(--gold);
+    padding:8px 14px; font-size:14px; width:220px; outline:none; font-family:inherit; letter-spacing:1px; border-radius:2px; backdrop-filter:blur(4px); transition: border-color 0.3s; }
+  #q::placeholder { color:rgba(217,179,108,.3); }
+  #q:focus { border-color:var(--red); background:rgba(217,179,108,.08); }
+  #msg { width:100%; font-size:13px; color:var(--red); letter-spacing:1px; min-height:18px; margin-top:5px; }
+  
+  #era { bottom:80px; left:0; right:0; text-align:center; font-size:15px; color:var(--gold);
+    letter-spacing:12px; opacity:.85; pointer-events:none; text-shadow: 0 0 20px rgba(217,179,108,0.5); }
+  #hint { bottom:30px; left:0; right:0; text-align:center; font-size:11.5px;
+    color:rgba(217,179,108,.3); letter-spacing:4px; pointer-events:none; }
+    
+  #card { bottom:110px; left:30px; width:320px; max-width:calc(100vw - 60px); z-index:11;
+    background:rgba(5,6,8,.85); border:1px solid rgba(217,179,108,.15); border-left:3px solid var(--red);
+    padding:20px; display:none; backdrop-filter:blur(10px); color:var(--gold); box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+  #card h2 { font-size:22px; letter-spacing:5px; font-weight:600; text-shadow: 0 0 10px rgba(217,179,108,0.3); }
+  #card .meta { font-size:13px; color:var(--gold-dim); margin-top:10px; line-height:1.9; }
+  #card .poem { margin-top:15px; padding-top:12px; border-top:1px solid rgba(217,179,108,.1); }
+  #card .poem .t { font-size:12px; color:var(--gold-dim); }
+  #card .poem .l { font-size:15px; margin-top:6px; line-height:1.8; letter-spacing:2px; color:#F2E6CD; }
+  #card .close { position:absolute; top:12px; right:15px; color:var(--gold-dim); cursor:pointer; transition: color 0.2s; }
+  #card .close:hover { color:var(--gold); }
+  
+  #foot { bottom:30px; right:30px; font-size:11px; color:rgba(217,179,108,.25); letter-spacing:1px; text-align:right; }
+  #foot a { color:rgba(217,179,108,.45); text-decoration:none; transition: color 0.2s; }
+  #foot a:hover { color:var(--gold); }
+  
+  /* Curtain for opening sequence */
+  #curtain { position:fixed; inset:0; background:#000; z-index:20; transition:opacity 4s ease-out; pointer-events:none; }
+  
+  @media (max-width:640px){ 
+      #title h1{font-size:19px;letter-spacing:6px;} 
+      #q{width:160px;} 
+      #era{bottom:90px;}
+      #card { bottom:100px; left:20px; padding:15px; width: calc(100vw - 40px); }
+  }
+</style>
+</head>
+<body>
+<div id="scene"></div>
+<div id="curtain"></div>
+
+<div class="ui" id="title"><h1>中国古代才女</h1><p>八百六十七位中国古代女诗人 · 先秦至清</p></div>
+<div class="ui" id="controls">
+  <input id="q" placeholder="搜她的名字:李清照" autocomplete="off"><div id="msg"></div>
+</div>
+<div class="ui" id="era"></div>
+<div class="ui" id="hint">滚动，向更早的时代走去</div>
+<div class="ui" id="card"><span class="close" onclick="this.parentElement.style.display='none'">✕</span><div id="cardBody"></div></div>
+<div class="ui" id="foot">她们的每一个名字,都出自「中国古代才女」数据集<br><a href="https://github.com/teenycao/shewrote" target="_blank" rel="noopener noreferrer">github.com/teenycao/shewrote</a></div>
+
+<script src="starmap_data.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+  "troika-three-text": "https://unpkg.com/troika-three-text@0.49.0/dist/troika-three-text.esm.js",
+  "troika-worker-utils": "https://unpkg.com/troika-worker-utils@0.49.0/dist/troika-worker-utils.esm.js",
+  "webgl-sdf-generator": "https://unpkg.com/webgl-sdf-generator@1.1.1/dist/webgl-sdf-generator.mjs",
+  "bidi-js": "https://unpkg.com/bidi-js@1.0.3/dist/bidi.mjs",
+  "troika-three-utils": "https://unpkg.com/troika-three-utils@0.49.0/dist/troika-three-utils.esm.js"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { Text } from 'troika-three-text';
+
+window.__starmapReady = true;
+{ const h = document.getElementById('hint');
+  if (h.dataset.fallback){ h.innerHTML = h.dataset.fallback; h.style.pointerEvents = ''; delete h.dataset.fallback; } }
+
+const FONT = 'fonts/wenkai-subset.woff';
+const GOLD = 0xD9B36C, GOLD_DIM = 0x8A7648, RED = 0xC9524C, BG = 0x050608;
+const Y0 = -500, Y1 = 1900, DEPTH = 7000; 
+const women = STAR_DATA.women;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+
+function hash(s){ let h = 2166136261; for (const c of s){ h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967295; }
+const zOf = y => -((Y1 - Math.min(Math.max(y, Y0), Y1)) / (Y1 - Y0)) * DEPTH;
+
+// Enhanced Gold Material (Cinematic specular feel)
+function cinematicGoldMaterial(halfH) {
+  const m = new THREE.MeshBasicMaterial({ transparent: true, toneMapped: false });
+  m.onBeforeCompile = sh => {
+    sh.uniforms.uH = { value: halfH };
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying float vLy;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvLy = position.y;');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying float vLy;\nuniform float uH;')
+      .replace('vec4 diffuseColor = vec4( diffuse, opacity );', `
+        float gk = clamp(vLy / (2.0 * uH) + 0.5, 0.0, 1.0);
+        // Add metallic sheen: brighter top, darker bottom
+        vec3 gcol = mix(diffuse * 0.4, diffuse * 1.8, pow(gk, 1.2));
+        vec4 diffuseColor = vec4( gcol, opacity );
+      `);
+  };
+  m.customProgramCacheKey = () => 'cinematic_goldgrad';
+  return m;
+}
+
+const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+renderer.setSize(innerWidth, innerHeight);
+document.getElementById('scene').appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(BG);
+scene.fog = new THREE.FogExp2(BG, 0.0035);
+
+const camera = new THREE.PerspectiveCamera(58, innerWidth/innerHeight, 0.1, 1500);
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.4, 0.5, 0.2); 
+composer.addPass(bloom);
+
+// 1. Dust & Volumetric Particles
+const dustMat = new THREE.ShaderMaterial({
+  uniforms: { uTime: { value: 0 } },
+  vertexShader: `
+    attribute vec3 color; varying vec3 vColor; varying float vZ; uniform float uTime;
+    void main() {
+      vColor = color;
+      vec3 p = position;
+      p.x += sin(uTime * 0.1 + p.z * 0.05) * 2.0;
+      p.y += cos(uTime * 0.1 + p.x * 0.05) * 2.0;
+      vZ = p.z;
+      vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
+      gl_PointSize = (12.0 + 8.0 * sin(p.x * 123.0)) * (1.0 / -mvPosition.z);
+      gl_Position = projectionMatrix * mvPosition;
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vColor; varying float vZ;
+    void main() {
+      vec2 xy = gl_PointCoord.xy - vec2(0.5);
+      float ll = length(xy);
+      if(ll > 0.5) discard;
+      float alpha = (0.5 - ll) * 2.0 * 0.6;
+      gl_FragColor = vec4(vColor, alpha);
+    }
+  `,
+  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+});
+{
+  const n = 2000;
+  const pos = new Float32Array(n*3);
+  const colors = new Float32Array(n*3);
+  const colorGold = new THREE.Color(GOLD_DIM);
+  const colorBlue = new THREE.Color(0x2a3b5c);
+  for (let i = 0; i < n; i++){
+    pos[i*3]   = (hash('dx'+i) - .5) * 400;
+    pos[i*3+1] = (hash('dy'+i) - .5) * 300;
+    pos[i*3+2] = -hash('dz'+i) * (DEPTH + 1000) + 200;
+    
+    const mixRatio = hash('c'+i);
+    const c = mixRatio > 0.8 ? colorBlue : colorGold;
+    colors[i*3] = c.r * (0.3 + 0.7*hash('r'+i));
+    colors[i*3+1] = c.g * (0.3 + 0.7*hash('g'+i));
+    colors[i*3+2] = c.b * (0.3 + 0.7*hash('b'+i));
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  scene.add(new THREE.Points(g, dustMat));
+}
+
+// 2. 某氏之雾 (Mist of the Unnamed)
+{
+  const numMist = STAR_DATA.meta.shi_poems || 376;
+  const mistPos = new Float32Array(numMist*3);
+  for(let i=0; i<numMist; i++) {
+    mistPos[i*3] = (hash('mx'+i) - 0.5) * 120;
+    mistPos[i*3+1] = (hash('my'+i) - 0.5) * 120;
+    mistPos[i*3+2] = -hash('mz'+i) * DEPTH;
+  }
+  const mistGeo = new THREE.BufferGeometry();
+  mistGeo.setAttribute('position', new THREE.BufferAttribute(mistPos, 3));
+  const mistMat = new THREE.PointsMaterial({ 
+    color: new THREE.Color(RED), size: 1.5, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, sizeAttenuation: true 
+  });
+  scene.add(new THREE.Points(mistGeo, mistMat));
+}
+
+// 3. Text Generation & Layout
+const texts = [], byId = {};
+const vertical = s => [...s.replace(/[()（）].*$/, '')].join('\n');
+const sorted = [...women].sort((a, b) => a.y - b.y);
+const GA = 2.39996323; 
+let gi = 0;
+
+for (const w of sorted){
+  const t = new Text();
+  t.text = vertical(w.n);
+  t.font = FONT;
+  t.fontSize = 1.5 + Math.min(Math.sqrt(w.np) * .35, 3.0);
+  t.lineHeight = 1.05;
+  t.color = GOLD;
+  t.anchorX = 'center'; t.anchorY = 'middle';
+  t.material = cinematicGoldMaterial(t.fontSize * 1.05 * t.text.split('\n').length / 2);
+  t.userData = w;
+  
+  t.userData._ang = gi * GA + (hash(w.id+'a')-0.5) * 0.8;
+  t.userData._rad = 22 + Math.pow(hash(w.id+'r'), .9) * 60;
+  t.userData._zz = zOf(w.y) + (hash(w.id+'z') - .5) * 50; 
+  gi++;
+  t.sync();
+  scene.add(t);
+  texts.push(t); byId[w.id] = t;
+}
+
+// 4. Kin Constellations (Lines)
+if (STAR_DATA.kin) {
+  const lineMat = new THREE.LineBasicMaterial({ color: 0x6E5C36, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending });
+  for (const pair of STAR_DATA.kin) {
+    if (byId[pair[0]] && byId[pair[1]]) {
+      const g = new THREE.BufferGeometry();
+      const line = new THREE.Line(g, lineMat);
+      line.userData = { idA: pair[0], idB: pair[1] };
+      scene.add(line);
+      texts.push(line);
+    }
+  }
+}
+
+function applyLayout(){
+  const aspect = innerWidth / innerHeight;
+  const halfW = Math.tan(camera.fov * Math.PI / 360) * aspect * 150 * .85;
+  const kx = Math.min(1, Math.max(.15, halfW / (80 * 1.45)));
+  
+  for (const t of texts){
+    if (t.userData && t.userData.id){
+      const u = t.userData;
+      t.position.set(Math.cos(u._ang) * u._rad * 1.5 * kx, Math.sin(u._ang) * u._rad * .85, u._zz);
+    }
+  }
+  for (const t of texts) {
+    if (t.type === 'Line' && t.userData.idA) {
+      const pA = byId[t.userData.idA].position;
+      const pB = byId[t.userData.idB].position;
+      t.geometry.setFromPoints([pA, pB]);
+    }
+  }
+}
+applyLayout();
+
+// 5. Eras Indicator
+const ERAS = [["先秦", -400], ["汉", 25], ["唐", 800], ["宋", 1120], ["元", 1300], ["明", 1520], ["清", 1780]];
+const eraEl = document.getElementById('era');
+function eraAt(z){
+  const yr = Y1 - (-z / DEPTH) * (Y1 - Y0);
+  for (let i = ERAS.length - 1; i >= 0; i--) if (yr >= ERAS[i][1] - 80) return ERAS[i][0];
+  return '先秦';
+}
+
+// 6. Camera & Interaction Logic
+let camZ = 300, targetZ = 30; 
+let px = 0, py = 0, tx = 0, ty = 0;
+let autoCruise = true, isOpening = true;
+let baseFov = 58, targetFov = 58;
+
+setTimeout(() => {
+  document.getElementById('curtain').style.opacity = '0';
+  document.querySelectorAll('.ui').forEach(el => el.classList.add('visible'));
+}, 500);
+setTimeout(() => { isOpening = false; }, 6000);
+
+addEventListener('wheel', e => { 
+  targetZ -= e.deltaY * .18; 
+  autoCruise = false; 
+  isOpening = false;
+  targetFov = Math.min(85, baseFov + Math.abs(e.deltaY) * 0.2);
+  clamp(); 
+}, { passive:true });
+
+let touchY = null;
+addEventListener('touchstart', e => { touchY = e.touches[0].clientY; isOpening = false; }, { passive:true });
+addEventListener('touchmove', e => {
+  if (touchY != null){ 
+    let delta = e.touches[0].clientY - touchY;
+    targetZ += delta * .8; 
+    touchY = e.touches[0].clientY; 
+    autoCruise = false; 
+    targetFov = Math.min(80, baseFov + Math.abs(delta) * 1.5);
+    clamp(); 
+  }
+}, { passive:true });
+addEventListener('touchend', () => { targetFov = baseFov; });
+
+addEventListener('mousemove', e => { tx = (e.clientX/innerWidth - .5); ty = (e.clientY/innerHeight - .5); });
+function clamp(){ targetZ = Math.min(100, Math.max(-DEPTH - 150, targetZ)); }
+
+// Search
+const q = document.getElementById('q'), msg = document.getElementById('msg');
+let matched = null;
+q.addEventListener('input', () => {
+  isOpening = false;
+  const v = q.value.trim();
+  const hitName = w => w.sn.includes(v) || (v.length > 1 && v[0] === w.sn[0] && w.sn.includes(v.slice(1)));
+  matched = v ? new Set(women.filter(hitName).map(w => w.id)) : null;
+  if (!v) msg.textContent = '';
+  else if (matched.size){
+    msg.textContent = matched.size === 1 ? `找到她了` : `「${v}」· ${matched.size} 位`;
+    let best = null, bd = 1e9;
+    for (const id of matched){ const d = Math.abs(byId[id].position.z - camZ); if (d < bd){ bd = d; best = byId[id]; } }
+    if (best){ targetZ = best.position.z + 40; autoCruise = false; }
+  } else msg.textContent = `「${v}」· 这里没有她`;
+});
+
+// Click
+const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+renderer.domElement.addEventListener('click', e => {
+  mouse.set((e.clientX/innerWidth)*2 - 1, -(e.clientY/innerHeight)*2 + 1);
+  ray.setFromCamera(mouse, camera);
+  const hits = ray.intersectObjects(texts.filter(t => t.userData && t.userData.id), false);
+  if (hits.length > 0){
+    const w = hits[0].object.userData;
+    const yrs = (w.b || w.d) ? `${w.b || '?'} – ${w.d || '?'}` : '生卒不详';
+    document.getElementById('cardBody').innerHTML = `
+      <h2>${esc(w.n)}</h2>
+      <div class="meta">${esc(w.dy)} · ${esc(yrs)}${w.pl ? ' · ' + w.pl : ''}<br>存世 ${w.np} 首${w.np === 1 ? ' —— 一生只亮过这一次' : ''}${w.al > 1 ? ` · ${w.al} 个名字` : ''}</div>
+      ${w.rl ? `<div class="poem"><div class="t">《${esc(w.rt)}》</div><div class="l">${esc(w.rl)}</div></div>` : ''}`;
+    document.getElementById('card').style.display = 'block';
+  }
+});
+
+// 7. Main Loop
+const clock = new THREE.Clock();
+
+function tick(){
+  const dt = Math.min(clock.getDelta(), 0.05);
+  
+  if (isOpening) {
+    camZ += (targetZ - camZ) * 0.02;
+    px += (tx - px) * 0.02;
+    py += (ty - py - 0.5) * 0.02; 
+    targetFov = 75 - (75 - baseFov) * Math.min(1, clock.elapsedTime / 6);
+  } else {
+    if (autoCruise) targetZ -= dt * 15;
+    clamp();
+    camZ += (targetZ - camZ) * 0.06;
+    px += (tx - px) * 0.05; py += (ty - py) * 0.05;
+  }
+  
+  if (!isOpening) {
+    targetFov += (baseFov - targetFov) * 0.05;
+    if (Math.abs(targetFov - camera.fov) > 0.02) {
+      camera.fov += (targetFov - camera.fov) * 0.1;
+      camera.updateProjectionMatrix();
+    }
+  }
+
+  let darknessMultiplier = 1.0;
+  const currentEra = eraAt(camZ);
+  if (currentEra === '宋') {
+    darknessMultiplier = 0.6; 
+  }
+
+  camera.position.set(px * 18, -py * 12, camZ);
+  camera.lookAt(px * 18, -py * 12, camZ - 100);
+
+  dustMat.uniforms.uTime.value = clock.elapsedTime;
+
+  for (const t of texts){
+    let pZ = 0;
+    if (t.type === 'Line') pZ = byId[t.userData.idA].position.z;
+    else pZ = t.position.z;
+    
+    const dz = camZ - pZ;
+    t.visible = dz > 8 && dz < 350; 
+    if (!t.visible) continue;
+    
+    const nearFade = Math.min(1, (dz - 8) / 35);
+    const farFade = Math.min(1, (350 - dz) / 50);
+    const totalFade = nearFade * farFade;
+
+    if (t.type === 'Line') {
+       const active = matched && (matched.has(t.userData.idA) || matched.has(t.userData.idB));
+       t.material.opacity = (active ? 0.6 : 0.08) * totalFade;
+       t.material.color.setHex(active ? RED : 0x6E5C36);
+    } 
+    else if (t.userData && t.userData.id){
+      if (matched){
+        const on = matched.has(t.userData.id);
+        t.color = on ? RED : GOLD;
+        t.fillOpacity = (on ? (0.88 + 0.12 * Math.sin(clock.elapsedTime * 2.4)) : 0.05) * totalFade;
+      } else { 
+        t.color = GOLD; 
+        let glowBoost = (currentEra === '宋' && t.userData.dy === '宋') ? 1.5 : 1.0;
+        t.fillOpacity = 0.85 * totalFade * darknessMultiplier * glowBoost; 
+      }
+    }
+  }
+  
+  eraEl.textContent = currentEra;
+  
+  composer.render();
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight);
+  applyLayout();
+});
+</script>
+<script>
+// CDN fallback: if the 3D module (loaded from unpkg) hasn't executed in time,
+// lift the curtain and point to the self-contained 2D version.
+setTimeout(() => {
+  if (window.__starmapReady) return;
+  document.getElementById('curtain').style.display = 'none';
+  const h = document.getElementById('hint');
+  h.dataset.fallback = h.innerHTML;
+  h.innerHTML = '3D 星图未能加载（网络或 CDN 不可用）· <a href="2d.html" style="color:#D9B36C">打开 2D 版</a>';
+  h.style.pointerEvents = 'auto';
+  document.querySelectorAll('.ui').forEach(el => el.classList.add('visible'));
+}, 8000);
+</script>
+</body>
+</html>

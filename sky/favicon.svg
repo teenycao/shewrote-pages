@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SheWrote favicon">
+  <defs>
+    <radialGradient id="bg" cx="38%" cy="34%" r="82%">
+      <stop offset="0%" stop-color="#17110D"/>
+      <stop offset="58%" stop-color="#08090B"/>
+      <stop offset="100%" stop-color="#020304"/>
+    </radialGradient>
+    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="84" fill="url(#bg)"/>
+  <rect x="16" y="16" width="480" height="480" rx="70" fill="none" stroke="#6E552F" stroke-opacity=".56" stroke-width="2"/>
+  <rect x="27" y="27" width="458" height="458" rx="60" fill="none" stroke="#A83E3B" stroke-opacity=".24" stroke-width="1"/>
+  <g fill="none" stroke="#6E552F" stroke-opacity=".45" stroke-width="2">
+    <path d="M92 161 150 101 228 129 322 82 398 157 363 267 438 355 292 419 177 373 111 282 92 161"/>
+    <path d="M228 129 177 373"/>
+  </g>
+  <g fill="#F7D99A" filter="url(#softGlow)">
+    <circle cx="92" cy="161" r="2.4"/><circle cx="150" cy="101" r="1.7"/><circle cx="228" cy="129" r="2.2"/>
+    <circle cx="322" cy="82" r="1.8"/><circle cx="398" cy="157" r="2.8"/><circle cx="363" cy="267" r="1.8"/>
+    <circle cx="438" cy="355" r="2.3"/><circle cx="292" cy="419" r="1.6"/><circle cx="177" cy="373" r="2.1"/><circle cx="111" cy="282" r="1.5"/>
+  </g>
+  <g fill="#A83E3B" opacity=".74" filter="url(#softGlow)">
+    <circle cx="131" cy="391" r="2.3"/><circle cx="151" cy="410" r="1.4"/><circle cx="110" cy="423" r="1.5"/><circle cx="394" cy="330" r="1.8"/>
+  </g>
+  <text x="256" y="358" text-anchor="middle" font-family="LXGW WenKai, Noto Serif SC, serif" font-size="350" font-weight="600" fill="#6D2424" opacity=".58">她</text>
+  <text x="256" y="350" text-anchor="middle" font-family="LXGW WenKai, Noto Serif SC, serif" font-size="350" font-weight="600" fill="#F7D99A">她</text>
+</svg>

@@ -1,0 +1,1 @@
+SheWrote static mirror
